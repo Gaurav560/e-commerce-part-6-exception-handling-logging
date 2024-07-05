@@ -1,9 +1,5 @@
-package com.telusko.aop;
+package com.telusko.exception;
 
-import com.telusko.exception.InsufficientStockException;
-import com.telusko.exception.ProductCreationException;
-import com.telusko.exception.ProductNotFoundException;
-import com.telusko.exception.ProductUpdateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
