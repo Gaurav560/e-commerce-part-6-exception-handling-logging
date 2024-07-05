@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 // This class is an Aspect, which allows us to add cross-cutting concerns
 @Aspect
-// This annotation makes the class a Spring-managed component
 @Component
 public class ExceptionLoggingAspect {
 
