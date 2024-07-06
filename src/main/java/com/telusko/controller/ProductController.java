@@ -116,8 +116,7 @@ package com.telusko.controller;
 import com.telusko.model.Product;
 import com.telusko.service.ProductService;
 import com.telusko.utils.ImageUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -131,23 +130,26 @@ import java.util.Map;
 @RestController
 @CrossOrigin
 @RequestMapping("/api")
+@Slf4j
 public class ProductController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
+    //no need to create logger instance as we are using lombok. it will be automatically done using @SL4fj
+    //private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductService productService;
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getAllProducts() {
-        logger.info("Fetching all products");
+        log.info("Fetching all products");
         List<Product> productList = productService.getAllProducts();
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
-        logger.info("Fetching product with id {}", id);
+        log.info("Fetching product with id {}", id);
         Product product = productService.getProductById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
@@ -155,14 +157,14 @@ public class ProductController {
     @PostMapping("/product")
     public ResponseEntity<Product> createProduct(@RequestPart("product") Product product,
                                                  @RequestPart("imageFile") MultipartFile imageFile) throws Exception {
-        logger.info("Creating product: {}", product.getName());
+        log.info("Creating product: {}", product.getName());
         Product savedProduct = productService.createProduct(product, imageFile);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
     @GetMapping("/product/{productId}/image")
     public ResponseEntity<byte[]> getImageByProductId(@PathVariable Integer productId) {
-        logger.info("Fetching image for product with id {}", productId);
+        log.info("Fetching image for product with id {}", productId);
         Product product = productService.getProductById(productId);
         byte[] imageData = ImageUtils.decompressImage(product.getImageData());
         return ResponseEntity.ok()
@@ -174,21 +176,21 @@ public class ProductController {
     public ResponseEntity<String> updateProduct(@PathVariable Integer id,
                                                 @RequestPart("product") Product product,
                                                 @RequestPart("imageFile") MultipartFile imageFile) throws Exception {
-        logger.info("Updating product with id {}", id);
+        log.info("Updating product with id {}", id);
         productService.updateProduct(id, product, imageFile);
         return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
-        logger.info("Deleting product with id {}", id);
+        log.info("Deleting product with id {}", id);
         productService.deleteProduct(id);
         return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<String> checkout(@RequestBody Map<Integer, Integer> productQuantities) throws Exception {
-        logger.info("Performing checkout with product quantities: {}", productQuantities);
+        log.info("Performing checkout with product quantities: {}", productQuantities);
         productService.checkout(productQuantities);
         return new ResponseEntity<>("Checkout successful", HttpStatus.OK);
     }

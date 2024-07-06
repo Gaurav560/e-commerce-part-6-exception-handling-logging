@@ -96,6 +96,7 @@ import com.telusko.exception.ProductUpdateException;
 import com.telusko.model.Product;
 import com.telusko.repo.ProductRepo;
 import com.telusko.utils.ImageUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,22 +109,25 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+    //no need to create logger instance as we are using lombok. it will be automatically done using @SL4fj
+   // private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
     private ProductRepo productRepo;
 
     @Override
     public List<Product> getAllProducts() {
-        logger.info("Fetching all products");
+        log.info("Fetching all products");
         return productRepo.findAll();
     }
 
     @Override
     public Product getProductById(Integer id) {
-        logger.info("Fetching product with id {}", id);
+        log.info("Fetching product with id {}", id);
         return productRepo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
     }
@@ -131,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product, MultipartFile imageFile) {
         try {
-            logger.info("Creating product: {}", product.getName());
+            log.info("Creating product: {}", product.getName());
             if (imageFile != null && !imageFile.isEmpty()) {
                 product.setImageName(imageFile.getOriginalFilename());
                 product.setImageType(imageFile.getContentType());
@@ -145,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Integer id, Product product, MultipartFile imageFile) throws IOException {
-        logger.info("Updating product with id {}", id);
+        log.info("Updating product with id {}", id);
         Product existingProduct = productRepo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
 
@@ -173,7 +177,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Integer id) {
-        logger.info("Deleting product with id {}", id);
+        log.info("Deleting product with id {}", id);
         Product product = productRepo.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         productRepo.delete(product);
@@ -182,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void checkout(Map<Integer, Integer> productQuantities) {
-        logger.info("Performing checkout with product quantities: {}", productQuantities);
+        log.info("Performing checkout with product quantities: {}", productQuantities);
         for (Map.Entry<Integer, Integer> entry : productQuantities.entrySet()) {
             Integer productId = entry.getKey();
             Integer quantity = entry.getValue();
